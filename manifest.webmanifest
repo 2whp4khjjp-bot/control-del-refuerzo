@@ -1,0 +1,11 @@
+{
+  "name": "Control del Refuerzo",
+  "short_name": "Refuerzo",
+  "description": "Control personal de jornada mensual",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#173a57",
+  "lang": "es"
+}
