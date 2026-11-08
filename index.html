@@ -94,18 +94,45 @@ header h1{line-height:20px}.nav{margin-top:2px}.summary{margin-bottom:6px}
 #holidaySetup .grid button.outside{background:#f6f7f9;color:#94a0aa;opacity:.65;cursor:default}
 #holidayProgress{color:#59748a;font-size:12px}
 
+
+#welcomeSetup{width:min(440px,calc(100% - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:20px;border:1px solid #cbdce7;border-radius:16px;background:#fff;color:#20384b}
+#welcomeSetup:modal{overscroll-behavior:contain}
+#welcomeSetup::backdrop{background:#15314899;overflow:hidden;overscroll-behavior:contain}
+#welcomeSetup h2{font-size:21px;line-height:1.2;margin:0 0 12px}
+#welcomeSetup h3{font-size:15px;margin:0 0 7px}
+#welcomeSetup p,#welcomeSetup li{font-size:13px;line-height:1.5}
+#welcomeSetup ul{padding-left:18px;margin:0}
+#welcomeSetup li+li{margin-top:5px}
+.welcome-ready{background:#edf4f8;border:1px solid #d8e5ee;border-radius:12px;padding:12px;margin:12px 0}
+#welcomeSetup .welcome-note{font-size:12px;color:#59748a}
+#welcomeSetup .btn{min-height:44px;width:100%}
+
 </style></head><body><main class="wrap"><header><div><h1>Control del Refuerzo</h1><button type="button" id="periodButton" aria-label="Personalizar periodo de refuerzo">Personalizar periodo de refuerzo</button></div><button class="btn alt" id="settings" aria-label="Configuración">⚙</button></header><div class="nav"><button id="prev" aria-label="Mes anterior">‹</button><button id="month" aria-label="Seleccionar mes y año"></button><button id="next" aria-label="Mes siguiente">›</button><button id="today" aria-label="Mes actual">⌂</button></div><section class="summary"><button class="stat stat-adjust" id="adjust" aria-label="Ajustar jornada mensual"><small>Objetivo · JM</small><strong id="jm"></strong><span id="jmHours">Ajustar</span></button><div class="stat"><small>Computadas</small><strong id="used"></strong><span id="usedHours">horas</span></div><div class="stat" id="balanceCard"><small>Saldo</small><strong id="balance"></strong><span id="balanceLabel">JN</span></div></section><section class="cal" id="swipe"><div class="week"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div><div class="grid" id="grid"></div></section><dialog class="edit" id="edit" aria-labelledby="editTitle">
 <div class="row"><h3 id="editTitle"></h3><button class="btn alt" type="button" id="close" aria-label="Cerrar editor">×</button></div>
 <div class="choices" id="choices"></div>
 <button class="holiday" type="button" id="festivo"></button>
-</dialog><div class="foot"><button id="rulesButton">ⓘ Recordatorios laborales</button></div><section class="rules" id="rules" hidden><strong>Recordatorios orientativos</strong><ul><li>24 y 31 de diciembre: NL · No laborables por convenio todos los años. Se descuentan de la JM automática y no cuentan como días de vacaciones computables. Los turnos elegidos manualmente se conservan.</li><li>B · Baja computa 1 jornada de lunes a viernes y 0 los sábados y domingos.</li><li>Una R en sábado no requiere JN el domingo. Una R en domingo requiere JN el lunes si es laborable; si el lunes es festivo, no.</li><li>Tras SOL–SOL–LUNA–LUNA recuerda los dos días de descanso, con posibles excepciones.</li><li>Máximo habitual de cuatro coberturas consecutivas y dos fines de semana mensuales por vacaciones, sujetos a excepciones.</li></ul><p id="alerts"></p></section></main><section class="modal" id="monthModal" hidden><div class="panel"><h2>Elegir mes y año</h2><label for="pickMonth">Mes</label><select id="pickMonth"></select><label for="pickYear">Año</label><input type="number" id="pickYear" min="1900" max="2200"><div class="actions"><button class="btn alt" id="monthCancel">Cancelar</button><button class="btn" id="monthApply">Ir al mes</button></div></div></section><section class="modal" id="settingsModal" hidden><div class="panel"><h2>Configuración</h2><div class="block"><strong>Periodo de refuerzo</strong><p id="periodConfigLabel"></p><button type="button" class="btn alt" id="changePeriod">Personalizar periodo</button></div><div class="block"><strong>Festivos del mes</strong><p id="holidayStatus"></p><button class="btn alt" id="reviewHolidays" type="button">Revisar festivos del mes</button></div><div class="block"><strong>Jornada mensual</strong><p id="autoJm"></p><label><input type="checkbox" id="manual"> Personalizar JM de este mes</label><label>JM personalizada</label><input type="number" id="manualJm" min="0" max="40" step=".5"><div class="actions"><button class="btn alt" id="resetJm">Automática</button><button class="btn" id="saveJm">Aplicar</button></div></div><div class="block"><strong>Copias de seguridad</strong><p>Hasta cinco copias internas automáticas semanales, creadas mientras usas la aplicación. Eliminar los datos del navegador puede borrar las copias.</p><p id="backupCount"></p><button class="btn alt" id="restore">Restaurar copia</button><button class="btn alt" id="export">Exportar archivo</button><button class="btn alt" id="import">Importar archivo</button><input id="file" type="file" accept="application/json,.json" hidden></div><div class="block"><strong>Ayuda</strong><p>Una guía breve para aprender a usar tu calendario.</p><button class="btn alt" id="showTutorial">Ver tutorial</button></div><div class="block"><strong>Calendario personal</strong><p>Los cambios se guardan solo en este navegador. Compartir el enlace no comparte tu cuadrante.</p><p>Dentro del periodo elegido se parte de JN de lunes a viernes y D los fines de semana, sin turnos ni festivos personalizados. Antes se guardará una copia del calendario actual.</p><button class="btn alt" id="startClean">Empezar de cero</button></div><div class="actions"><button class="btn" id="settingsClose">Cerrar</button></div></div></section><div class="toast" id="toast" role="status"></div>
+</dialog><div class="foot"><button id="rulesButton">ⓘ Recordatorios laborales</button></div><section class="rules" id="rules" hidden><strong>Recordatorios orientativos</strong><ul><li>24 y 31 de diciembre: NL · No laborables por convenio todos los años. Se descuentan de la JM automática y no cuentan como días de vacaciones computables. Los turnos elegidos manualmente se conservan.</li><li>B · Baja computa 1 jornada de lunes a viernes y 0 los sábados y domingos.</li><li>Una R en sábado no requiere JN el domingo. Una R en domingo requiere JN el lunes si es laborable; si el lunes es festivo, no.</li><li>Tras SOL–SOL–LUNA–LUNA recuerda los dos días de descanso, con posibles excepciones.</li><li>Máximo habitual de cuatro coberturas consecutivas y dos fines de semana mensuales por vacaciones, sujetos a excepciones.</li></ul><p id="alerts"></p></section></main><section class="modal" id="monthModal" hidden><div class="panel"><h2>Elegir mes y año</h2><label for="pickMonth">Mes</label><select id="pickMonth"></select><label for="pickYear">Año</label><input type="number" id="pickYear" min="1900" max="2200"><div class="actions"><button class="btn alt" id="monthCancel">Cancelar</button><button class="btn" id="monthApply">Ir al mes</button></div></div></section><section class="modal" id="settingsModal" hidden><div class="panel"><h2>Configuración</h2><div class="block"><strong>Periodo de refuerzo</strong><p id="periodConfigLabel"></p><button type="button" class="btn alt" id="changePeriod">Personalizar periodo</button></div><div class="block"><strong>Festivos del mes</strong><p id="holidayStatus"></p><button class="btn alt" id="reviewHolidays" type="button">Revisar festivos del mes</button></div><div class="block"><strong>Jornada mensual</strong><p id="autoJm"></p><label><input type="checkbox" id="manual"> Personalizar JM de este mes</label><label>JM personalizada</label><input type="number" id="manualJm" min="0" max="40" step=".5"><div class="actions"><button class="btn alt" id="resetJm">Automática</button><button class="btn" id="saveJm">Aplicar</button></div></div><div class="block"><strong>Copias de seguridad</strong><p>Hasta cinco copias internas automáticas semanales, creadas mientras usas la aplicación. Eliminar los datos del navegador puede borrar las copias.</p><p id="backupCount"></p><button class="btn alt" id="restore">Restaurar copia</button><button class="btn alt" id="export">Exportar archivo</button><button class="btn alt" id="import">Importar archivo</button><input id="file" type="file" accept="application/json,.json" hidden></div><div class="block"><strong>Ayuda</strong><p>Una guía breve para aprender a usar tu calendario.</p><button class="btn alt" id="showWelcome">Antes de empezar</button><button class="btn alt" id="showTutorial">Ver tutorial</button></div><div class="block"><strong>Calendario personal</strong><p>Los cambios se guardan solo en este navegador. Compartir el enlace no comparte tu cuadrante.</p><p>Dentro del periodo elegido se parte de JN de lunes a viernes y D los fines de semana, sin turnos ni festivos personalizados. Antes se guardará una copia del calendario actual.</p><button class="btn alt" id="startClean">Empezar de cero</button></div><div class="actions"><button class="btn" id="settingsClose">Cerrar</button></div></div></section><div class="toast" id="toast" role="status"></div>
 
+
+
+<dialog id="welcomeSetup" aria-labelledby="welcomeTitle" aria-describedby="welcomeIntro">
+<h2 id="welcomeTitle">Vamos a preparar tu calendario</h2>
+<p id="welcomeIntro">Control del Refuerzo te ayuda a planificar tus jornadas y a controlar, mes a mes, tu objetivo, lo que llevas computado y tu saldo.</p>
+<div class="welcome-ready"><h3>Ten a mano antes de empezar</h3><ul>
+<li><strong>La fecha en la que comienza</strong> tu periodo de refuerzo.</li>
+<li><strong>La fecha en la que termina</strong> tu periodo de refuerzo.</li>
+<li><strong>Todos los días festivos de ese periodo</strong>: nacionales, autonómicos, locales y los que correspondan a tu centro.</li>
+</ul></div>
+<p>Primero indicarás las fechas y después marcarás los festivos de cada mes. Con eso listo, podrás completar tu cuadrante. Solo se contarán los días de tu periodo, con saldos mensuales.</p>
+<p class="welcome-note">El 24 y el 31 de diciembre se aplican automáticamente como no laborables por convenio. Tu cuadrante se guarda en este navegador; compartir el enlace no comparte tus turnos.</p>
+<button type="button" class="btn" id="welcomeContinue">Lo tengo preparado · Comenzar</button>
+</dialog>
 
 <dialog id="periodSetup" aria-labelledby="periodTitle" aria-describedby="periodIntro" closedby="none">
 <form id="periodForm">
 <p>Paso 1 · Fechas del refuerzo</p>
 <h2 id="periodTitle">Personaliza tu calendario</h2>
-<p id="periodIntro">Indica cuándo comienza y termina tu periodo de refuerzo. Se incluyen ambas fechas y los saldos se calculan por mes, contando solo los días de este periodo.</p>
+<p id="periodIntro">Ten a mano tus fechas y los festivos del periodo. Indica cuándo comienza y termina tu periodo de refuerzo. Se incluyen ambas fechas y los saldos se calculan por mes, contando solo los días de este periodo.</p>
 <div id="savedPeriodWrap" hidden><label for="savedPeriod">Periodos guardados</label><select id="savedPeriod"></select></div>
 <label for="periodStart">Fecha de inicio</label><input id="periodStart" name="start" type="date" min="1900-01-01" max="2200-12-31" required aria-describedby="periodHint">
 <label for="periodEnd">Fecha de fin</label><input id="periodEnd" name="end" type="date" min="1900-01-01" max="2200-12-31" required aria-describedby="periodHint periodError">
@@ -213,6 +240,24 @@ let touch;const area=$('swipe');area.addEventListener('touchstart',ev=>{if(ev.to
 const holidaySetup=$('holidaySetup');
 
 const periodSetup=$('periodSetup');
+
+const WELCOME='control-refuerzo-bienvenida-v1',welcomeSetup=$('welcomeSetup');
+let welcomeStartsSetup=false;
+function hasSeenWelcome(){try{return localStorage.getItem(WELCOME)==='done'}catch(err){return false}}
+function showWelcome(startSetup=false){
+welcomeStartsSetup=startSetup;if(startSetup)$('settingsModal').hidden=true;
+if($('edit').open)close();
+if(!tour.hidden)endTour();
+$('welcomeContinue').textContent=startSetup?'Lo tengo preparado · Comenzar':'Entendido';
+if(!welcomeSetup.open)welcomeSetup.showModal();
+}
+$('welcomeContinue').onclick=()=>welcomeSetup.close();
+welcomeSetup.addEventListener('close',()=>{
+try{localStorage.setItem(WELCOME,'done')}catch(err){}
+if(welcomeStartsSetup){welcomeStartsSetup=false;beginPeriodSetup(true)}
+});
+$('showWelcome').onclick=()=>showWelcome(false);
+
 let setupReviewQueue=false,setupReturnMonth='';
 function previewPeriod(){
 const start=$('periodStart').value,end=$('periodEnd').value,preview=$('periodPreview');
@@ -227,7 +272,8 @@ const item=document.createElement('li');item.textContent=nm[mm-1]+' '+yy+': '+pa
 }
 preview.append(list);if(months.length>12){const more=document.createElement('p');more.textContent='Y '+(months.length-12)+' meses más.';preview.append(more)}
 }
-function beginPeriodSetup(){
+function beginPeriodSetup(skipWelcome=false){
+if(skipWelcome!==true&&!currentPeriod()&&!hasSeenWelcome()){showWelcome(true);return}
 if($('edit').open)close();$('settingsModal').hidden=true;$('monthModal').hidden=true;
 if(holidaySetup.open)holidaySetup.close();
 if(!tour.hidden)endTour();
