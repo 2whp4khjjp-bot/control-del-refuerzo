@@ -74,17 +74,51 @@ header h1{font-size:18px;letter-spacing:-.4px}
 #reviewHolidays{font-size:13px}
 body.touring .edit{position:static;inset:auto;margin:10px 0;width:100%;max-height:none;border-radius:13px;box-shadow:none}
 
-</style></head><body><main class="wrap"><header><div><h1>Control del Refuerzo</h1></div><button class="btn alt" id="settings" aria-label="Configuración">⚙</button></header><div class="nav"><button id="prev" aria-label="Mes anterior">‹</button><button id="month" aria-label="Seleccionar mes y año"></button><button id="next" aria-label="Mes siguiente">›</button><button id="today" aria-label="Mes actual">⌂</button></div><section class="summary"><button class="stat stat-adjust" id="adjust" aria-label="Ajustar jornada mensual"><small>Objetivo · JM</small><strong id="jm"></strong><span>Ajustar</span></button><div class="stat"><small>Computadas</small><strong id="used"></strong><span>jornadas</span></div><div class="stat" id="balanceCard"><small>Saldo</small><strong id="balance"></strong><span id="balanceLabel">JN</span></div></section><section class="cal" id="swipe"><div class="week"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div><div class="grid" id="grid"></div></section><dialog class="edit" id="edit" aria-labelledby="editTitle">
+
+#periodButton{display:block;max-width:100%;min-height:24px;padding:2px 0;border:0;background:none;color:#59748a;font-size:11px;text-align:left;white-space:nowrap}
+header h1{line-height:20px}.nav{margin-top:2px}.summary{margin-bottom:6px}
+#periodSetup{width:min(440px,calc(100% - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:20px;border:1px solid #cbdce7;border-radius:16px;background:#fff;color:#20384b}
+#periodSetup:modal{overscroll-behavior:contain}
+#periodSetup::backdrop{background:#15314899;overflow:hidden;overscroll-behavior:contain}
+#periodSetup h2{font-size:20px;margin:0 0 10px}
+#periodSetup p,#periodSetup label{font-size:13px;line-height:1.5}
+#periodSetup label{display:block;margin:12px 0 5px}
+#periodSetup input,#periodSetup select{font:inherit;color:inherit;width:100%;min-height:44px;padding:10px;border:1px solid #b8cad8;border-radius:8px;background:#fff;min-width:0}
+#periodSetup input:user-invalid{border:2px solid #a12b32;background:#fff3f2}
+#periodPreview{font-size:12px;color:#59748a}
+#periodPreview ul{padding-left:18px;margin:6px 0}
+#periodError{color:#a12b32;min-height:1.5em}
+#periodSetup button{min-height:44px}
+.nav button:disabled{opacity:.35;cursor:default}
+.cell.outside{background:#f2f4f6;color:#87939d;border-color:#e7ebee;opacity:.7;cursor:default}
+#holidaySetup .grid button.outside{background:#f6f7f9;color:#94a0aa;opacity:.65;cursor:default}
+#holidayProgress{color:#59748a;font-size:12px}
+
+</style></head><body><main class="wrap"><header><div><h1>Control del Refuerzo</h1><button type="button" id="periodButton" aria-label="Personalizar periodo de refuerzo">Personalizar periodo de refuerzo</button></div><button class="btn alt" id="settings" aria-label="Configuración">⚙</button></header><div class="nav"><button id="prev" aria-label="Mes anterior">‹</button><button id="month" aria-label="Seleccionar mes y año"></button><button id="next" aria-label="Mes siguiente">›</button><button id="today" aria-label="Mes actual">⌂</button></div><section class="summary"><button class="stat stat-adjust" id="adjust" aria-label="Ajustar jornada mensual"><small>Objetivo · JM</small><strong id="jm"></strong><span id="jmHours">Ajustar</span></button><div class="stat"><small>Computadas</small><strong id="used"></strong><span id="usedHours">horas</span></div><div class="stat" id="balanceCard"><small>Saldo</small><strong id="balance"></strong><span id="balanceLabel">JN</span></div></section><section class="cal" id="swipe"><div class="week"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div><div class="grid" id="grid"></div></section><dialog class="edit" id="edit" aria-labelledby="editTitle">
 <div class="row"><h3 id="editTitle"></h3><button class="btn alt" type="button" id="close" aria-label="Cerrar editor">×</button></div>
 <div class="choices" id="choices"></div>
 <button class="holiday" type="button" id="festivo"></button>
-</dialog><div class="foot"><button id="rulesButton">ⓘ Recordatorios laborales</button></div><section class="rules" id="rules" hidden><strong>Recordatorios orientativos</strong><ul><li>24 y 31 de diciembre: NL · No laborables por convenio todos los años. Se descuentan de la JM automática y no cuentan como días de vacaciones computables. Los turnos elegidos manualmente se conservan.</li><li>B · Baja computa 1 jornada de lunes a viernes y 0 los sábados y domingos.</li><li>Una R en sábado no requiere JN el domingo. Una R en domingo requiere JN el lunes si es laborable; si el lunes es festivo, no.</li><li>Tras SOL–SOL–LUNA–LUNA recuerda los dos días de descanso, con posibles excepciones.</li><li>Máximo habitual de cuatro coberturas consecutivas y dos fines de semana mensuales por vacaciones, sujetos a excepciones.</li></ul><p id="alerts"></p></section></main><section class="modal" id="monthModal" hidden><div class="panel"><h2>Elegir mes y año</h2><label>Mes</label><select id="pickMonth"></select><label>Año</label><input type="number" id="pickYear" min="1900" max="2200"><div class="actions"><button class="btn alt" id="monthCancel">Cancelar</button><button class="btn" id="monthApply">Ir al mes</button></div></div></section><section class="modal" id="settingsModal" hidden><div class="panel"><h2>Configuración</h2><div class="block"><strong>Festivos del mes</strong><p id="holidayStatus"></p><button class="btn alt" id="reviewHolidays" type="button">Revisar festivos del mes</button></div><div class="block"><strong>Jornada mensual</strong><p id="autoJm"></p><label><input type="checkbox" id="manual"> Personalizar JM de este mes</label><label>JM personalizada</label><input type="number" id="manualJm" min="0" max="40" step=".5"><div class="actions"><button class="btn alt" id="resetJm">Automática</button><button class="btn" id="saveJm">Aplicar</button></div></div><div class="block"><strong>Copias de seguridad</strong><p>Hasta cinco copias internas automáticas semanales, creadas mientras usas la aplicación. Eliminar los datos del navegador puede borrar las copias.</p><p id="backupCount"></p><button class="btn alt" id="restore">Restaurar copia</button><button class="btn alt" id="export">Exportar archivo</button><button class="btn alt" id="import">Importar archivo</button><input id="file" type="file" accept="application/json,.json" hidden></div><div class="block"><strong>Ayuda</strong><p>Una guía breve para aprender a usar tu calendario.</p><button class="btn alt" id="showTutorial">Ver tutorial</button></div><div class="block"><strong>Calendario personal</strong><p>Los cambios se guardan solo en este navegador. Compartir el enlace no comparte tu cuadrante.</p><p>Empieza con JN de lunes a viernes y D los fines de semana, sin turnos ni festivos personalizados. Antes se guardará una copia del calendario actual.</p><button class="btn alt" id="startClean">Empezar de cero</button></div><div class="actions"><button class="btn" id="settingsClose">Cerrar</button></div></div></section><div class="toast" id="toast" role="status"></div>
+</dialog><div class="foot"><button id="rulesButton">ⓘ Recordatorios laborales</button></div><section class="rules" id="rules" hidden><strong>Recordatorios orientativos</strong><ul><li>24 y 31 de diciembre: NL · No laborables por convenio todos los años. Se descuentan de la JM automática y no cuentan como días de vacaciones computables. Los turnos elegidos manualmente se conservan.</li><li>B · Baja computa 1 jornada de lunes a viernes y 0 los sábados y domingos.</li><li>Una R en sábado no requiere JN el domingo. Una R en domingo requiere JN el lunes si es laborable; si el lunes es festivo, no.</li><li>Tras SOL–SOL–LUNA–LUNA recuerda los dos días de descanso, con posibles excepciones.</li><li>Máximo habitual de cuatro coberturas consecutivas y dos fines de semana mensuales por vacaciones, sujetos a excepciones.</li></ul><p id="alerts"></p></section></main><section class="modal" id="monthModal" hidden><div class="panel"><h2>Elegir mes y año</h2><label for="pickMonth">Mes</label><select id="pickMonth"></select><label for="pickYear">Año</label><input type="number" id="pickYear" min="1900" max="2200"><div class="actions"><button class="btn alt" id="monthCancel">Cancelar</button><button class="btn" id="monthApply">Ir al mes</button></div></div></section><section class="modal" id="settingsModal" hidden><div class="panel"><h2>Configuración</h2><div class="block"><strong>Periodo de refuerzo</strong><p id="periodConfigLabel"></p><button type="button" class="btn alt" id="changePeriod">Personalizar periodo</button></div><div class="block"><strong>Festivos del mes</strong><p id="holidayStatus"></p><button class="btn alt" id="reviewHolidays" type="button">Revisar festivos del mes</button></div><div class="block"><strong>Jornada mensual</strong><p id="autoJm"></p><label><input type="checkbox" id="manual"> Personalizar JM de este mes</label><label>JM personalizada</label><input type="number" id="manualJm" min="0" max="40" step=".5"><div class="actions"><button class="btn alt" id="resetJm">Automática</button><button class="btn" id="saveJm">Aplicar</button></div></div><div class="block"><strong>Copias de seguridad</strong><p>Hasta cinco copias internas automáticas semanales, creadas mientras usas la aplicación. Eliminar los datos del navegador puede borrar las copias.</p><p id="backupCount"></p><button class="btn alt" id="restore">Restaurar copia</button><button class="btn alt" id="export">Exportar archivo</button><button class="btn alt" id="import">Importar archivo</button><input id="file" type="file" accept="application/json,.json" hidden></div><div class="block"><strong>Ayuda</strong><p>Una guía breve para aprender a usar tu calendario.</p><button class="btn alt" id="showTutorial">Ver tutorial</button></div><div class="block"><strong>Calendario personal</strong><p>Los cambios se guardan solo en este navegador. Compartir el enlace no comparte tu cuadrante.</p><p>Dentro del periodo elegido se parte de JN de lunes a viernes y D los fines de semana, sin turnos ni festivos personalizados. Antes se guardará una copia del calendario actual.</p><button class="btn alt" id="startClean">Empezar de cero</button></div><div class="actions"><button class="btn" id="settingsClose">Cerrar</button></div></div></section><div class="toast" id="toast" role="status"></div>
+
+
+<dialog id="periodSetup" aria-labelledby="periodTitle" aria-describedby="periodIntro" closedby="none">
+<form id="periodForm">
+<p>Paso 1 · Fechas del refuerzo</p>
+<h2 id="periodTitle">Personaliza tu calendario</h2>
+<p id="periodIntro">Indica cuándo comienza y termina tu periodo de refuerzo. Se incluyen ambas fechas y los saldos se calculan por mes, contando solo los días de este periodo.</p>
+<div id="savedPeriodWrap" hidden><label for="savedPeriod">Periodos guardados</label><select id="savedPeriod"></select></div>
+<label for="periodStart">Fecha de inicio</label><input id="periodStart" name="start" type="date" min="1900-01-01" max="2200-12-31" required aria-describedby="periodHint">
+<label for="periodEnd">Fecha de fin</label><input id="periodEnd" name="end" type="date" min="1900-01-01" max="2200-12-31" required aria-describedby="periodHint periodError">
+<p id="periodHint">El fin debe ser igual o posterior al inicio. Tus turnos y festivos guardados se conservan; el objetivo automático se ajustará a las fechas elegidas.</p>
+<div id="periodPreview" aria-live="polite"></div><p id="periodError" role="status"></p>
+<div class="actions"><button type="button" class="btn alt" id="periodCancel" hidden>Cancelar</button><button type="submit" class="btn">Continuar con los festivos</button></div>
+</form></dialog>
 
 <dialog id="holidaySetup" aria-labelledby="holidayTitle" aria-describedby="holidayIntro" closedby="none">
 <form id="holidayForm">
-<h2 id="holidayTitle">Antes de comenzar: festivos</h2>
-<p id="holidayIntro">Debes indicar manualmente los festivos de este mes antes de planificar. Incluye los nacionales, autonómicos, locales y los que correspondan a tu centro. La JM automática depende de ellos.</p>
-<p><strong id="holidayMonth"></strong> · Toca los días festivos para marcarlos en rojo. Vuelve a tocarlos para desmarcarlos. Los turnos guardados se conservan.</p>
+<p id="holidayProgress"></p><h2 id="holidayTitle">Personaliza tus festivos</h2>
+<p id="holidayIntro">Revisa manualmente los festivos de los días de tu refuerzo en este mes antes de planificar. Incluye los nacionales, autonómicos, locales y los que correspondan a tu centro. La JM automática depende de ellos.</p>
+<p><strong id="holidayMonth"></strong> · Toca los días festivos para marcarlos en rojo. Vuelve a tocarlos para desmarcarlos. Los días fuera del periodo no se cuentan y aparecen desactivados. Los turnos guardados se conservan.</p>
 <p id="nonWorkingInfo" hidden>NL · El 24 y el 31 de diciembre no son festivos: son no laborables por convenio. Se aplican automáticamente todos los años y tienen el mismo efecto en la JM automática.</p>
 <div class="week" aria-hidden="true"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div>
 <div class="grid" id="holidayGrid"></div>
@@ -107,29 +141,62 @@ const parse=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d)}
 function emptyCalendar(){return {entries:{},overrides:{},version:3}}
 let data=emptyCalendar();try{const z=JSON.parse(localStorage.getItem(ST)||'null');if(z&&z.entries&&z.overrides)data=z}catch(e){}
 let y=now.y,m=now.m,chosen=null,showRules=false;
+
+function validCalendarDate(k){
+if(typeof k!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(k))return false;
+const [yy,mm,dd]=k.split('-').map(Number),d=new Date(yy,mm-1,dd);
+return yy>=1900&&yy<=2200&&d.getFullYear()===yy&&d.getMonth()===mm-1&&d.getDate()===dd;
+}
+function validPeriod(p){return !!(p&&validCalendarDate(p.start)&&validCalendarDate(p.end)&&p.start<=p.end)}
+function storedPeriods(){return Array.isArray(data.refuerzoPeriods)?data.refuerzoPeriods.filter(validPeriod):[]}
+function currentPeriod(){return storedPeriods().find(p=>p.id===data.activeRefuerzoPeriod)||null}
+function inPeriod(k,p=currentPeriod()){return !!(p&&k>=p.start&&k<=p.end)}
+function monthDates(yy=y,mm=m,p=currentPeriod()){
+return Array.from({length:new Date(yy,mm+1,0).getDate()},(_,i)=>key(yy,mm,i+1)).filter(k=>!p||inPeriod(k,p));
+}
+function periodMonths(p=currentPeriod()){
+if(!p)return [];
+const out=[];let [yy,mm]=p.start.slice(0,7).split('-').map(Number);
+while(mk(yy,mm-1)<=p.end.slice(0,7)){out.push(mk(yy,mm-1));mm++;if(mm===13){yy++;mm=1}}
+return out;
+}
+function dateLabel(k){const [yy,mm,dd]=k.split('-');return dd+'/'+mm+'/'+yy}
+function periodLabel(p){return dateLabel(p.start)+' — '+dateLabel(p.end)}
+function viewMonth(monthKey){const [yy,mm]=monthKey.split('-').map(Number);y=yy;m=mm-1}
+function clampView(){
+const p=currentPeriod();if(!p)return;
+if(mk(y,m)<p.start.slice(0,7))viewMonth(p.start.slice(0,7));
+if(mk(y,m)>p.end.slice(0,7))viewMonth(p.end.slice(0,7));
+}
+function monthlyOverride(){const p=currentPeriod();return p?p.overrides?.[mk(y,m)]:data.overrides[mk(y,m)]}
+function paintPeriodStatus(){
+const p=currentPeriod();$('periodButton').textContent=p?periodLabel(p):'Personalizar periodo de refuerzo';
+$('prev').disabled=!!p&&mk(y,m)<=p.start.slice(0,7);$('next').disabled=!!p&&mk(y,m)>=p.end.slice(0,7);
+}
+
 const e=k=>data.entries[k]||{},nonWorking=k=>k.slice(5)==='12-24'||k.slice(5)==='12-31',holiday=k=>!nonWorking(k)&&!!e(k).festivo,laborable=k=>work(k)&&!holiday(k)&&!nonWorking(k),def=k=>laborable(k)?'JN':'D',shift=k=>e(k).shift||def(k),value=k=>{const s=shift(k);return s==='SOL'||s==='LUNA'?1.5:s==='JN'||s==='R'?1:s==='B'?(work(k)?1:0):s==='V'&&laborable(k)?1:0};
-function stats(){const dates=Array.from({length:new Date(y,m+1,0).getDate()},(_,i)=>key(y,m,i+1)),auto=dates.filter(laborable).length;const x=data.overrides[mk(y,m)];const jm=typeof x==='number'?x:auto,computed=dates.reduce((s,k)=>s+value(k),0);return {auto,jm,computed,balance:computed-jm}}
+function stats(){const dates=monthDates(),auto=dates.filter(laborable).length;const x=monthlyOverride();const jm=typeof x==='number'?x:auto,computed=dates.reduce((s,k)=>s+value(k),0);return {auto,jm,computed,balance:computed-jm}}
 function toast(s){$('toast').textContent=s;$('toast').classList.add('on');setTimeout(()=>$('toast').classList.remove('on'),2300)}
 function save(){try{localStorage.setItem(ST,JSON.stringify(data))}catch(e){toast('No se pudo guardar; exporta tus datos')}backup()}
 function backups(){try{const b=JSON.parse(localStorage.getItem(BK)||'[]');return Array.isArray(b)?b:[]}catch(e){return []}}
 function backup(){try{let b=backups(),t=Date.now();if(b.length&&t-b[b.length-1].at<604800000)return;b.push({at:t,data:JSON.parse(JSON.stringify(data))});b=b.slice(-5);localStorage.setItem(BK,JSON.stringify(b))}catch(e){}}
 function close(){chosen=null;if($('edit').open)$('edit').close()}
-function paint(){paintHolidayStatus();const s=stats();$('month').textContent=nm[m]+' '+y;$('jm').textContent=num(s.jm);$('used').textContent=num(s.computed);$('balance').textContent=(s.balance>0?'+':'')+num(s.balance);$('balanceCard').className='stat '+(s.balance>=.5?'extra':s.balance===0||s.balance===-.5?'good':'bad');$('balanceLabel').textContent=s.balance>=.5?num(s.balance*8)+' h extra':s.balance===-.5?'Tolerado':s.balance===0?'Cuadrado':'JN pendientes';
+function paint(){paintPeriodStatus();paintHolidayStatus();const s=stats();$('month').textContent=nm[m]+' '+y;$('jm').textContent=num(s.jm);$('used').textContent=num(s.computed);$('jmHours').textContent=num(s.jm*8)+' h · Ajustar';$('usedHours').textContent=num(s.computed*8)+' h';$('balance').textContent=(s.balance>0?'+':'')+num(s.balance);$('balanceCard').className='stat '+(s.balance>=.5?'extra':s.balance===0||s.balance===-.5?'good':'bad');$('balanceLabel').textContent=s.balance>=.5?num(s.balance*8)+' h extra':s.balance===-.5?'Tolerado':s.balance===0?'Cuadrado':'JN pendientes';
 const g=$('grid'),fresh=g.dataset.month!==mk(y,m);if(fresh){g.replaceChildren();g.dataset.month=mk(y,m)}const offset=(new Date(y,m,1).getDay()+6)%7;for(let i=0;fresh&&i<offset;i++){const v=document.createElement('div');v.className='blank';g.append(v)}
-for(let d=1;d<=new Date(y,m+1,0).getDate();d++){const k=key(y,m,d),sft=shift(k),b=fresh?document.createElement('button'):g.querySelector('[data-date="'+k+'"]');b.dataset.date=k;b.className='cell '+sft.toLowerCase()+(chosen===k?' sel':'');b.setAttribute('aria-label',d+' de '+nm[m]+', '+sft+(sft==='B'?' (Baja)':'')+(nonWorking(k)?', no laborable por convenio':''));const n=fresh?document.createElement('span'):b.children[0];n.className='n'+(y===now.y&&m===now.m&&d===now.d?' now':'');n.textContent=d;const c=fresh?document.createElement('span'):b.children[1];c.className='c';c.textContent=sft;if(fresh)b.append(n,c);const previousBadge=b.querySelector('.f');if(nonWorking(k)||holiday(k)){const f=previousBadge||document.createElement('span');f.className=nonWorking(k)?'f nl':'f';f.textContent=nonWorking(k)?'NL':'F';if(!previousBadge)b.append(f)}else if(previousBadge)previousBadge.remove();b.onclick=()=>{if(chosen===k)close();else open(k);paint()};if(fresh)g.append(b)}if(showRules)alerts()}
-function open(k,preview=false){if(!monthReviewed(k.slice(0,7))){beginHolidayReview();return}chosen=k;const d=parse(k);$('editTitle').textContent='Editar '+d.getDate()+' de '+nm[d.getMonth()].toLowerCase();$('festivo').disabled=nonWorking(k);$('festivo').textContent=nonWorking(k)?'NL · No laborable por convenio (automático)':holiday(k)?'Quitar marca de festivo ×':'Marcar como festivo  F';const opts=$('choices');opts.replaceChildren();for(const code of C){const b=document.createElement('button');b.className=code.toLowerCase();b.textContent=code==='B'?'B · Baja':code;b.setAttribute('aria-pressed',String(code===shift(k)));b.autofocus=code===shift(k);b.onclick=()=>{data.entries[k]={...e(k),shift:code};save();close();paint()};opts.append(b)}if(!$('edit').open){if(preview)$('edit').show();else $('edit').showModal()}}
-function move(n){const d=new Date(y,m+n,1);y=d.getFullYear();m=d.getMonth();close();paint();requireHolidayReview()}
-function alerts(){let text=[];const start=key(y,m,1),len=new Date(y,m+1,0).getDate();let run=0;for(let i=-5;i<len+5;i++){const k=plus(start,i),s=shift(k);run=s==='SOL'||s==='LUNA'?run+1:0;if(run===5)text.push('Cinco coberturas consecutivas hasta '+k+'.')}
-for(let i=-3;i<len;i++){const k=plus(start,i);if(['SOL','SOL','LUNA','LUNA'].every((t,j)=>shift(plus(k,j))===t))text.push('Ciclo completo desde '+k+': recordar dos descansos.')}
-for(let i=0;i<len;i++){const k=plus(start,i);if(shift(k)==='R'&&wd(k)===0){const next=plus(k,1);text.push(holiday(next)||nonWorking(next)?'R del '+k+': lunes no laborable, sin JN exigible.':'R del '+k+': recordar JN del lunes '+next+'.')}}$('alerts').textContent=text.join(' ')||'Sin avisos particulares detectados.'}
+for(let d=1;d<=new Date(y,m+1,0).getDate();d++){const k=key(y,m,d),sft=shift(k),b=fresh?document.createElement('button'):g.querySelector('[data-date="'+k+'"]');b.dataset.date=k;b.className='cell '+sft.toLowerCase()+(chosen===k?' sel':'')+(!inPeriod(k)?' outside':'');b.disabled=!inPeriod(k);b.setAttribute('aria-label',d+' de '+nm[m]+', '+sft+(sft==='B'?' (Baja)':'')+(nonWorking(k)?', no laborable por convenio':'')+(!inPeriod(k)?', fuera del periodo':''));const n=fresh?document.createElement('span'):b.children[0];n.className='n'+(y===now.y&&m===now.m&&d===now.d?' now':'');n.textContent=d;const c=fresh?document.createElement('span'):b.children[1];c.className='c';c.textContent=inPeriod(k)?sft:'—';if(fresh)b.append(n,c);const previousBadge=b.querySelector('.f');if(inPeriod(k)&&(nonWorking(k)||holiday(k))){const f=previousBadge||document.createElement('span');f.className=nonWorking(k)?'f nl':'f';f.textContent=nonWorking(k)?'NL':'F';if(!previousBadge)b.append(f)}else if(previousBadge)previousBadge.remove();b.onclick=()=>{if(chosen===k)close();else open(k);paint()};if(fresh)g.append(b)}if(showRules)alerts()}
+function open(k,preview=false){if(!currentPeriod()){beginPeriodSetup();return}if(!inPeriod(k))return;if(!monthReviewed(k.slice(0,7))){beginHolidayReview();return}chosen=k;const d=parse(k);$('editTitle').textContent='Editar '+d.getDate()+' de '+nm[d.getMonth()].toLowerCase();$('festivo').disabled=nonWorking(k);$('festivo').textContent=nonWorking(k)?'NL · No laborable por convenio (automático)':holiday(k)?'Quitar marca de festivo ×':'Marcar como festivo  F';const opts=$('choices');opts.replaceChildren();for(const code of C){const b=document.createElement('button');b.className=code.toLowerCase();b.textContent=code==='B'?'B · Baja':code;b.setAttribute('aria-pressed',String(code===shift(k)));b.autofocus=code===shift(k);b.onclick=()=>{data.entries[k]={...e(k),shift:code};save();close();paint()};opts.append(b)}if(!$('edit').open){if(preview)$('edit').show();else $('edit').showModal()}}
+function move(n){const d=new Date(y,m+n,1);y=d.getFullYear();m=d.getMonth();clampView();close();paint();requireHolidayReview()}
+function alerts(){const periodShift=k=>inPeriod(k)?shift(k):'D';let text=[];const start=key(y,m,1),len=new Date(y,m+1,0).getDate();let run=0;for(let i=-5;i<len+5;i++){const k=plus(start,i),s=periodShift(k);run=s==='SOL'||s==='LUNA'?run+1:0;if(run===5)text.push('Cinco coberturas consecutivas hasta '+k+'.')}
+for(let i=-3;i<len;i++){const k=plus(start,i);if(['SOL','SOL','LUNA','LUNA'].every((t,j)=>periodShift(plus(k,j))===t))text.push('Ciclo completo desde '+k+': recordar dos descansos.')}
+for(let i=0;i<len;i++){const k=plus(start,i);if(periodShift(k)==='R'&&wd(k)===0){const next=plus(k,1);if(!inPeriod(next))continue;text.push(holiday(next)||nonWorking(next)?'R del '+k+': lunes no laborable, sin JN exigible.':'R del '+k+': recordar JN del lunes '+next+'.')}}$('alerts').textContent=text.join(' ')||'Sin avisos particulares detectados.'}
 $('edit').addEventListener('close',()=>{if(!$('edit').open&&chosen!==null){chosen=null;paint()}});
-$('prev').onclick=()=>move(-1);$('next').onclick=()=>move(1);$('today').onclick=()=>{y=now.y;m=now.m;close();paint();requireHolidayReview()};$('close').onclick=()=>{close();paint()};$('festivo').onclick=()=>{if(!chosen||nonWorking(chosen))return;const k=chosen;data.entries[k]={...e(k),festivo:!holiday(k)};save();close();paint()};$('rulesButton').onclick=()=>{showRules=!showRules;$('rules').hidden=!showRules;alerts()};
-$('month').onclick=()=>{$('pickMonth').innerHTML=nm.map((x,i)=>'<option value="'+i+'">'+x+'</option>').join('');$('pickMonth').value=m;$('pickYear').value=y;$('monthModal').hidden=false};$('monthCancel').onclick=()=>$('monthModal').hidden=true;$('monthApply').onclick=()=>{const a=Number($('pickYear').value),b=Number($('pickMonth').value);if(Number.isInteger(a)&&a>=1900&&a<=2200){y=a;m=b;close();$('monthModal').hidden=true;paint();requireHolidayReview()}};
-function config(open){if(open&&!monthReviewed()){beginHolidayReview();return}$('settingsModal').hidden=!open;if(open){const s=stats(),v=data.overrides[mk(y,m)];$('autoJm').textContent='Objetivo automático: '+s.auto+' JN';$('manual').checked=typeof v==='number';$('manualJm').value=typeof v==='number'?v:s.auto;$('manualJm').disabled=typeof v!=='number';$('backupCount').textContent=backups().length+' copias internas guardadas.'}}
+$('prev').onclick=()=>move(-1);$('next').onclick=()=>move(1);$('today').onclick=()=>{y=now.y;m=now.m;clampView();close();paint();requireHolidayReview()};$('close').onclick=()=>{close();paint()};$('festivo').onclick=()=>{if(!chosen||nonWorking(chosen))return;const k=chosen;data.entries[k]={...e(k),festivo:!holiday(k)};save();close();paint()};$('rulesButton').onclick=()=>{showRules=!showRules;$('rules').hidden=!showRules;alerts()};
+$('month').onclick=()=>{$('pickMonth').innerHTML=nm.map((x,i)=>'<option value="'+i+'">'+x+'</option>').join('');$('pickMonth').value=m;$('pickYear').value=y;$('monthModal').hidden=false};$('monthCancel').onclick=()=>$('monthModal').hidden=true;$('monthApply').onclick=()=>{const a=Number($('pickYear').value),b=Number($('pickMonth').value);if(Number.isInteger(a)&&a>=1900&&a<=2200){const period=currentPeriod(),target=mk(a,b);if(period&&(target<period.start.slice(0,7)||target>period.end.slice(0,7))){toast('Elige un mes dentro de tu periodo de refuerzo');return}y=a;m=b;close();$('monthModal').hidden=true;paint();requireHolidayReview()}};
+function config(open){if(open&&!currentPeriod()){beginPeriodSetup();return}if(open&&!monthReviewed()){beginHolidayReview();return}$('settingsModal').hidden=!open;if(open){const s=stats(),v=monthlyOverride();$('periodConfigLabel').textContent=periodLabel(currentPeriod());$('autoJm').textContent='Objetivo automático de los días de tu refuerzo este mes: '+s.auto+' JN ('+num(s.auto*8)+' h)';$('manual').checked=typeof v==='number';$('manualJm').value=typeof v==='number'?v:s.auto;$('manualJm').disabled=typeof v!=='number';$('backupCount').textContent=backups().length+' copias internas guardadas.'}}
 $('settings').onclick=()=>config(true);$('adjust').onclick=()=>config(true);$('settingsClose').onclick=()=>config(false);$('manual').onchange=x=>$('manualJm').disabled=!x.target.checked;
-$('saveJm').onclick=()=>{let v=Number($('manualJm').value);if($('manual').checked){if(!Number.isFinite(v)||v<0||v>40||v*2%1!==0){toast('Valor incorrecto');return}data.overrides[mk(y,m)]=v}else delete data.overrides[mk(y,m)];save();config(false);paint()};$('resetJm').onclick=()=>{delete data.overrides[mk(y,m)];save();config(false);paint()};
+$('saveJm').onclick=()=>{let v=Number($('manualJm').value);if($('manual').checked){if(!Number.isFinite(v)||v<0||v>40||v*2%1!==0){toast('Valor incorrecto');return}currentPeriod().overrides={...(currentPeriod().overrides||{}),[mk(y,m)]:v}}else if(currentPeriod().overrides)delete currentPeriod().overrides[mk(y,m)];save();config(false);paint()};$('resetJm').onclick=()=>{if(currentPeriod().overrides)delete currentPeriod().overrides[mk(y,m)];save();config(false);paint()};
 $('startClean').onclick=()=>{
-if(!confirm('¿Empezar con un calendario limpio en este navegador? Se quitarán los turnos personalizados, festivos y ajustes de todos los meses. Guardaremos antes una copia que podrás recuperar con Restaurar copia.'))return;
+if(!confirm('¿Empezar con un calendario limpio en este navegador? Se quitarán los periodos de refuerzo, turnos personalizados, festivos y ajustes de todos los meses. Guardaremos antes una copia que podrás recuperar con Restaurar copia.'))return;
 const fresh=emptyCalendar();
 try{
 const snapshot={at:Date.now(),data:JSON.parse(JSON.stringify(data))};
@@ -138,14 +205,88 @@ localStorage.setItem(ST,JSON.stringify(fresh));
 }catch(err){toast('No se pudo crear la copia o guardar. Tu calendario sigue igual.');return}
 data=fresh;close();config(false);paint();toast('Calendario limpio. Copia anterior guardada.');requireHolidayReview();
 };
-$('restore').onclick=()=>{const b=backups();if(!b.length){toast('No hay copias');return}const promptText=b.map((x,i)=>(i+1)+'. '+new Date(x.at).toLocaleString('es-ES')).join('\n');const v=prompt('Número de copia para restaurar:\n'+promptText);if(v===null)return;const ix=Number(v)-1;if(!Number.isInteger(ix)||!b[ix]){toast('Copia no válida');return}if(confirm('¿Restaurar esta copia y reemplazar el calendario?')){data=b[ix].data;save();close();config(false);paint();requireHolidayReview()}};
+$('restore').onclick=()=>{const b=backups();if(!b.length){toast('No hay copias');return}const promptText=b.map((x,i)=>(i+1)+'. '+new Date(x.at).toLocaleString('es-ES')).join('\n');const v=prompt('Número de copia para restaurar:\n'+promptText);if(v===null)return;const ix=Number(v)-1;if(!Number.isInteger(ix)||!b[ix]){toast('Copia no válida');return}if(confirm('¿Restaurar esta copia y reemplazar el calendario?')){data=b[ix].data;clampView();save();close();config(false);paint();requireHolidayReview()}};
 $('export').onclick=()=>{const b=new Blob([JSON.stringify({format:'control-del-refuerzo',data},null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='control-del-refuerzo-'+key(now.y,now.m,now.d)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),2000)};
-$('import').onclick=()=>$('file').click();$('file').onchange=async ev=>{const f=ev.target.files[0];if(!f)return;try{const z=JSON.parse(await f.text()),v=z.format==='control-del-refuerzo'?z.data:z;if(!v.entries||!v.overrides)throw Error();if(confirm('¿Sustituir datos con esta copia?')){data=v;save();config(false);close();paint();requireHolidayReview()}}catch(e){toast('Copia no válida')}ev.target.value=''};
+$('import').onclick=()=>$('file').click();$('file').onchange=async ev=>{const f=ev.target.files[0];if(!f)return;try{const z=JSON.parse(await f.text()),v=z.format==='control-del-refuerzo'?z.data:z;if(!v.entries||!v.overrides)throw Error();if(confirm('¿Sustituir datos con esta copia?')){data=v;clampView();save();config(false);close();paint();requireHolidayReview()}}catch(e){toast('Copia no válida')}ev.target.value=''};
 let touch;const area=$('swipe');area.addEventListener('touchstart',ev=>{if(ev.touches.length===1)touch={x:ev.touches[0].clientX,y:ev.touches[0].clientY}},{passive:true});area.addEventListener('touchend',ev=>{if(!touch)return;const dx=ev.changedTouches[0].clientX-touch.x,dy=ev.changedTouches[0].clientY-touch.y;touch=null;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.6)move(dx<0?1:-1)},{passive:true});
 
 const holidaySetup=$('holidaySetup');
+
+const periodSetup=$('periodSetup');
+let setupReviewQueue=false,setupReturnMonth='';
+function previewPeriod(){
+const start=$('periodStart').value,end=$('periodEnd').value,preview=$('periodPreview');
+preview.replaceChildren();
+if(!validPeriod({start,end}))return;
+const months=periodMonths({start,end});
+const title=document.createElement('p');title.textContent=months.length+(months.length===1?' mes':' meses')+' para controlar. Objetivos orientativos antes de revisar festivos:';preview.append(title);
+const list=document.createElement('ul');
+for(const monthKey of months.slice(0,12)){
+const [yy,mm]=monthKey.split('-').map(Number),dates=monthDates(yy,mm-1,{start,end}),target=dates.filter(laborable).length;
+const item=document.createElement('li');item.textContent=nm[mm-1]+' '+yy+': '+parse(dates[0]).getDate()+'–'+parse(dates.at(-1)).getDate()+' · '+num(target)+(target===1?' jornada':' jornadas')+' ('+num(target*8)+' h)';list.append(item);
+}
+preview.append(list);if(months.length>12){const more=document.createElement('p');more.textContent='Y '+(months.length-12)+' meses más.';preview.append(more)}
+}
+function beginPeriodSetup(){
+if($('edit').open)close();$('settingsModal').hidden=true;$('monthModal').hidden=true;
+if(holidaySetup.open)holidaySetup.close();
+if(!tour.hidden)endTour();
+const periods=storedPeriods(),p=currentPeriod(),select=$('savedPeriod');select.replaceChildren();
+const option=document.createElement('option');option.value='new';option.textContent='Crear otro periodo';select.append(option);
+for(const period of periods){const opt=document.createElement('option');opt.value=period.id;opt.textContent=periodLabel(period);select.append(opt)}
+$('savedPeriodWrap').hidden=!periods.length;select.value=p?p.id:'new';
+$('periodStart').value=p?p.start:'';$('periodEnd').value=p?p.end:'';
+$('periodStart').removeAttribute('aria-invalid');$('periodEnd').min=p?p.start:'1900-01-01';$('periodEnd').setCustomValidity('');$('periodEnd').removeAttribute('aria-invalid');$('periodError').textContent='';$('periodCancel').hidden=!p;
+previewPeriod();
+if(!periodSetup.open)periodSetup.showModal();
+}
+function onPeriodInput(){
+$('periodEnd').setCustomValidity('');$('periodEnd').removeAttribute('aria-invalid');$('periodError').textContent='';
+if(validCalendarDate($('periodStart').value))$('periodEnd').min=$('periodStart').value;else $('periodEnd').min='1900-01-01';
+previewPeriod();
+}
+$('periodStart').oninput=onPeriodInput;$('periodEnd').oninput=onPeriodInput;
+for(const field of [$('periodStart'),$('periodEnd')]){
+field.addEventListener('invalid',()=>field.setAttribute('aria-invalid','true'));
+field.addEventListener('blur',()=>field.setAttribute('aria-invalid',String(field.matches(':user-invalid'))));
+field.addEventListener('input',()=>{if(field.hasAttribute('aria-invalid'))field.setAttribute('aria-invalid',String(field.matches(':user-invalid')))});
+}
+$('periodEnd').addEventListener('invalid',()=>{ $('periodEnd').setAttribute('aria-invalid','true');$('periodError').textContent='La fecha de fin debe ser igual o posterior al inicio, y no posterior a 2200.'});
+$('savedPeriod').onchange=()=>{
+const p=storedPeriods().find(p=>p.id===$('savedPeriod').value);
+$('periodStart').value=p?p.start:'';$('periodEnd').value=p?p.end:'';onPeriodInput();
+};
+$('periodCancel').onclick=()=>{periodSetup.close();requireHolidayReview()};
+periodSetup.addEventListener('cancel',ev=>{ev.preventDefault();$('periodError').textContent=currentPeriod()?'Usa Cancelar para volver sin guardar.':'Indica el inicio y el fin del refuerzo para continuar.'});
+$('periodButton').onclick=beginPeriodSetup;
+$('changePeriod').onclick=beginPeriodSetup;
+$('periodForm').onsubmit=ev=>{
+ev.preventDefault();
+const start=$('periodStart').value,end=$('periodEnd').value;
+if(!validPeriod({start,end})){
+$('periodEnd').setCustomValidity('La fecha de fin debe ser igual o posterior al inicio.');
+$('periodEnd').reportValidity();return;
+}
+const periods=storedPeriods(),id=start+'/'+end,existing=periods.find(p=>p.id===id),previous=currentPeriod();
+let selected=existing;
+if(!selected){
+const overrides={};
+for(const monthKey of periodMonths({start,end})){
+const [yy,mm]=monthKey.split('-').map(Number),dates=monthDates(yy,mm-1,{start,end}),prior=previous?monthDates(yy,mm-1,previous):[];
+if(previous&&dates[0]===prior[0]&&dates.at(-1)===prior.at(-1)&&typeof previous.overrides?.[monthKey]==='number')overrides[monthKey]=previous.overrides[monthKey];
+else if(dates.length===new Date(yy,mm,0).getDate()&&typeof data.overrides[monthKey]==='number')overrides[monthKey]=data.overrides[monthKey];
+}
+selected={id,start,end,overrides,holidayReviews:{}};
+periods.push(selected);
+}
+const next={...data,refuerzoPeriods:periods,activeRefuerzoPeriod:id};
+try{localStorage.setItem(ST,JSON.stringify(next))}catch(err){$('periodError').textContent='No se pudo guardar el periodo. Tus datos siguen igual.';return}
+data=next;backup();periodSetup.close();
+clampView();setupReturnMonth=mk(y,m);setupReviewQueue=true;paint();requireHolidayReview();
+};
+
 let holidayDraft=new Set(),holidayMonthKey='';
-function monthReviewed(monthKey=mk(y,m)){return !!(data.holidayReviews&&data.holidayReviews[monthKey]&&data.holidayReviews[monthKey].confirmed===true)}
+function monthReviewed(monthKey=mk(y,m)){return currentPeriod()?.holidayReviews?.[monthKey]?.confirmed===true}
 function paintHolidayStatus(){
 $('holidayStatus').textContent=monthReviewed()?'Festivos de este mes revisados.':'Revisión obligatoria: indica los festivos de este mes para continuar.';
 }
@@ -156,9 +297,11 @@ $('holidayCheckText').textContent=selected.length?'Confirmo que he añadido todo
 $('holidayContinue').textContent=selected.length?'Guardar festivos y continuar':'Confirmar mes sin festivos y continuar';
 }
 function beginHolidayReview(){
+if(!currentPeriod()){beginPeriodSetup();return}
 config(false);close();paint();
 holidayMonthKey=mk(y,m);
-holidayDraft=new Set(Object.keys(data.entries).filter(k=>k.startsWith(holidayMonthKey+'-')&&holiday(k)));
+const months=periodMonths(),dates=monthDates();$('holidayProgress').textContent='Paso 2 · Festivos · Mes '+(months.indexOf(holidayMonthKey)+1)+' de '+months.length+' · Días '+parse(dates[0]).getDate()+'–'+parse(dates.at(-1)).getDate();
+holidayDraft=new Set(Object.keys(data.entries).filter(k=>k.startsWith(holidayMonthKey+'-')&&inPeriod(k)&&holiday(k)));
 $('holidayMonth').textContent=nm[m]+' '+y;$('nonWorkingInfo').hidden=m!==11;
 $('holidayConfirmed').checked=false;$('holidayError').textContent='';
 const grid=$('holidayGrid');grid.replaceChildren();
@@ -166,6 +309,7 @@ for(let i=0;i<(new Date(y,m,1).getDay()+6)%7;i++)grid.append(document.createElem
 for(let day=1;day<=new Date(y,m+1,0).getDate();day++){
 const k=key(y,m,day),button=document.createElement('button');
 button.type='button';button.textContent=day;
+if(!inPeriod(k)){button.disabled=true;button.className='outside';button.setAttribute('aria-label',day+' de '+nm[m]+' '+y+', fuera del periodo');grid.append(button);continue}
 if(nonWorking(k)){button.textContent=day+'\nNL';button.disabled=true;button.className='nl-day';button.setAttribute('aria-label',day+' de '+nm[m]+' '+y+', no laborable por convenio, automático');grid.append(button);continue}
 button.setAttribute('aria-label',day+' de '+nm[m]+' '+y+', festivo');
 button.setAttribute('aria-pressed',String(holidayDraft.has(k)));
@@ -179,7 +323,17 @@ grid.append(button);
 renderHolidaySelection();
 if(!holidaySetup.open)holidaySetup.showModal();
 }
-function requireHolidayReview(){paintHolidayStatus();if(!monthReviewed())beginHolidayReview()}
+function requireHolidayReview(){
+if(!currentPeriod()){beginPeriodSetup();return}
+clampView();
+if(setupReviewQueue){
+const pending=periodMonths().find(monthKey=>!monthReviewed(monthKey));
+if(pending){viewMonth(pending);paint();beginHolidayReview();return}
+setupReviewQueue=false;if(setupReturnMonth)viewMonth(setupReturnMonth);clampView();paint();
+if(!seenTour&&tour.hidden)startTour();return;
+}
+paintHolidayStatus();if(!monthReviewed())beginHolidayReview();
+}
 $('reviewHolidays').onclick=beginHolidayReview;
 holidaySetup.addEventListener('cancel',ev=>{
 ev.preventDefault();
@@ -191,14 +345,14 @@ if(!$('holidayConfirmed').checked){$('holidayConfirmed').reportValidity();return
 if(holidayMonthKey!==mk(y,m)){beginHolidayReview();return}
 const entries={...data.entries};
 for(let day=1;day<=new Date(y,m+1,0).getDate();day++){
-const k=key(y,m,day),marked=holidayDraft.has(k);if(nonWorking(k))continue;
+const k=key(y,m,day),marked=holidayDraft.has(k);if(!inPeriod(k)||nonWorking(k))continue;
 if(marked!==holiday(k))entries[k]={...e(k),festivo:marked};
 }
-const next={...data,entries,holidayReviews:{...(data.holidayReviews||{}),[holidayMonthKey]:{confirmed:true,at:Date.now()}}};
+const active=currentPeriod();const updated={...active,holidayReviews:{...(active.holidayReviews||{}),[holidayMonthKey]:{confirmed:true,at:Date.now()}}};const next={...data,entries,refuerzoPeriods:storedPeriods().map(p=>p.id===active.id?updated:p)};
 try{localStorage.setItem(ST,JSON.stringify(next))}
 catch(err){$('holidayError').textContent='No se pudo guardar. No se ha cambiado tu calendario. Exporta una copia o revisa el almacenamiento del navegador.';return}
 data=next;backup();holidaySetup.close();paint();
-if(!seenTour&&tour.hidden)startTour();
+if(setupReviewQueue)requireHolidayReview();else if(!seenTour&&tour.hidden)startTour();
 };
 
 backup();paint();
@@ -206,11 +360,11 @@ backup();paint();
 const TOUR='control-refuerzo-tutorial-v1',tour=$('tour');
 const nativeTour='popover' in HTMLElement.prototype;
 const tourSteps=[
-{target:'header',title:'Tu calendario, solo tuyo',body:'¡Bienvenido! Empiezas con JN de lunes a viernes y D los fines de semana. Tus cambios se guardan en este navegador: compartir el enlace no comparte tu cuadrante.'},
-{target:'.nav',title:'1. Elige el mes',body:'Usa las flechas para cambiar de mes. Toca el nombre del mes para elegir mes y año, o la casita para volver al mes actual. En el móvil también puedes deslizar el calendario.'},
+{target:'header',title:'Tu calendario, solo tuyo',body:'¡Bienvenido! Tu calendario cuenta solo los días entre el inicio y el fin de tu refuerzo, con saldos separados por mes. Tus cambios se guardan en este navegador: compartir el enlace no comparte tu cuadrante.'},
+{target:'.nav',title:'1. Elige el mes',body:'Usa las flechas para cambiar de mes. Toca el nombre del mes para elegir mes y año, o la casita para ir al mes actual si está dentro de tu periodo. Las fechas del periodo se cambian tocándolas bajo el título. En el móvil también puedes deslizar el calendario.'},
 {target:'#edit',title:'2. Toca un día para editarlo',editor:true,body:'Al tocar un día se abre un panel con JN, SOL, LUNA, V, R, D y B · Baja. La baja cuenta 1 jornada de lunes a viernes y 0 en fin de semana. Toca el código que necesites: se guarda al instante y el editor se cierra. Esta demostración no cambia ningún turno.'},
 {target:'#festivo',title:'3. Marca tus festivos',editor:true,body:'Antes de planificar cada mes debes revisar manualmente todos sus festivos y confirmarlos. Después, en el editor puedes marcar o quitar un festivo. Aparece una F roja, se guarda y el editor se cierra. La marca conserva el turno que hayas elegido para ese día. El 24 y el 31 de diciembre se aplican automáticamente como NL, no laborables por convenio.'},
-{target:'.summary',title:'4. Revisa tu saldo',body:'JM es tu objetivo del mes y Computadas suma tus jornadas. El saldo compara ambas: positivo indica exceso y negativo indica lo que falta. Toca la tarjeta Objetivo · JM para personalizarlo.'},
+{target:'.summary',title:'4. Revisa tu saldo',body:'JM es el objetivo de los días de tu refuerzo incluidos en el mes visible. Computadas suma solo esas fechas; ambas tarjetas muestran también las horas. El saldo compara ambas: positivo indica exceso y negativo indica lo que falta. Toca la tarjeta Objetivo · JM para personalizarlo.'},
 {target:'#settings',title:'5. Guarda una copia y listo',body:'En Configuración puedes exportar tu calendario para guardarlo o llevarlo a otro dispositivo. También puedes empezar de cero y volver a ver este tutorial. ¡Ya puedes preparar tu cuadrante!'}
 ];
 let tourIndex=0,tourTarget=null,tourReturn=null,tourEditor=false;
@@ -226,7 +380,7 @@ if(tourReturn&&tourReturn.isConnected)tourReturn.focus({preventScroll:true});
 function showTourStep(){
 if(tourTarget)tourTarget.classList.remove('tour-target');
 const step=tourSteps[tourIndex];
-if(step.editor){open(key(y,m,now.y===y&&now.m===m?now.d:1),true);paint();tourEditor=true}
+if(step.editor){open(monthDates().find(k=>k===key(now.y,now.m,now.d))||monthDates()[0],true);paint();tourEditor=true}
 else if(tourEditor){close();paint();tourEditor=false}
 tourTarget=document.querySelector(step.target);
 if(tourTarget){tourTarget.classList.add('tour-target')}
@@ -249,7 +403,7 @@ $('tourSkip').onclick=endTour;
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!tour.hidden){ev.preventDefault();endTour()}});
 $('showTutorial').onclick=startTour;
 let seenTour=false;try{seenTour=localStorage.getItem(TOUR)==='done'}catch(err){}
-if(!monthReviewed())requireHolidayReview();else if(!seenTour)startTour();
+clampView();paint();if(!currentPeriod())beginPeriodSetup();else{setupReturnMonth=mk(y,m);setupReviewQueue=periodMonths().some(monthKey=>!monthReviewed(monthKey));requireHolidayReview();if(!setupReviewQueue&&!seenTour&&tour.hidden)startTour();}
 
 if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
 })();
