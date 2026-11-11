@@ -115,7 +115,6 @@ header h1{line-height:20px}.nav{margin-top:2px}.summary{margin-bottom:6px}
 </dialog><div class="foot"><button id="rulesButton">ⓘ Recordatorios laborales</button></div><section class="rules" id="rules" hidden><strong>Recordatorios orientativos</strong><ul><li>24 y 31 de diciembre: NL · No laborables por convenio todos los años. Se descuentan de la JM automática y no cuentan como días de vacaciones computables. Los turnos elegidos manualmente se conservan.</li><li>B · Baja computa 1 jornada de lunes a viernes y 0 los sábados y domingos.</li><li>Una R en sábado no requiere JN el domingo. Una R en domingo requiere JN el lunes si es laborable; si el lunes es festivo, no.</li><li>Tras SOL–SOL–LUNA–LUNA recuerda los dos días de descanso, con posibles excepciones.</li><li>Máximo habitual de cuatro coberturas consecutivas y dos fines de semana mensuales por vacaciones, sujetos a excepciones.</li></ul><p id="alerts"></p></section></main><section class="modal" id="monthModal" hidden><div class="panel"><h2>Elegir mes y año</h2><label for="pickMonth">Mes</label><select id="pickMonth"></select><label for="pickYear">Año</label><input type="number" id="pickYear" min="1900" max="2200"><div class="actions"><button class="btn alt" id="monthCancel">Cancelar</button><button class="btn" id="monthApply">Ir al mes</button></div></div></section><section class="modal" id="settingsModal" hidden><div class="panel"><h2>Configuración</h2><div class="block"><strong>Periodo de refuerzo</strong><p id="periodConfigLabel"></p><button type="button" class="btn alt" id="changePeriod">Personalizar periodo</button></div><div class="block"><strong>Festivos del mes</strong><p id="holidayStatus"></p><button class="btn alt" id="reviewHolidays" type="button">Revisar festivos del mes</button></div><div class="block"><strong>Jornada mensual</strong><p id="autoJm"></p><label><input type="checkbox" id="manual"> Personalizar JM de este mes</label><label>JM personalizada</label><input type="number" id="manualJm" min="0" max="40" step=".5"><div class="actions"><button class="btn alt" id="resetJm">Automática</button><button class="btn" id="saveJm">Aplicar</button></div></div><div class="block" id="syncBlock" hidden>
 <strong>Compartir y sincronizar</strong>
 <p>Al activar un enlace se envían a Google los turnos y festivos del periodo elegido. Las bajas se muestran sin indicar el motivo. Los cambios de este navegador se sincronizan al volver a tener conexión.</p>
-<div id="syncCodeBox"><label for="syncCode">Código de activación</label><input id="syncCode" type="password" autocomplete="off" required></div>
 <div class="block"><strong>Cuadrante compartido</strong>
 <p>Cualquiera con el enlace podrá ver el cuadrante actualizado.</p>
 <p id="syncStatus-web" role="status"></p>
@@ -530,7 +529,6 @@ function showSyncControls(){
     $('syncLink-' + channel).hidden = !active;
     $('syncLink-' + channel).value = active ? syncURL(channel, entry) : '';
   }
-  $('syncCodeBox').hidden = syncChannels.every(channel => links[channel]?.active);
 }
 
 async function syncRequest(action, channel, entry, extra){
@@ -543,7 +541,7 @@ async function syncRequest(action, channel, entry, extra){
   if(!response.ok || result.ok !== true) throw new Error(result.error || 'No se pudo sincronizar.');
 }
 
-async function runSync(channel, action, code){
+async function runSync(channel, action){
   if(syncQueue.has(channel)) return;
   let entry = syncLinks()[channel];
   if(!entry && action !== 'create') return;
@@ -568,10 +566,9 @@ async function runSync(channel, action, code){
     entry.revision = Math.max(Date.now(), (entry.revision || 0) + 1);
     setSyncLink(channel, entry);
     showSyncControls();
-    await syncRequest(action, channel, entry, {schedule, revision:entry.revision, ...(code ? {code} : {})});
+    await syncRequest(action, channel, entry, {schedule, revision:entry.revision});
     if(action === 'create'){
       setSyncLink(channel, {...entry, active:true});
-      $('syncCode').value = '';
     }
     syncSent.set(channel, schedule.days);
     sentPeriod = period.id;
@@ -600,9 +597,7 @@ if(syncEndpoint.startsWith('https://script.google.com/')){
   $('syncBlock').hidden = false;
   for(const channel of syncChannels){
     $('syncCreate-' + channel).onclick = () => {
-      const code = $('syncCode').value.trim();
-      if(!code){$('syncCode').reportValidity();return}
-      void runSync(channel, 'create', code).then(queueSync);
+      void runSync(channel, 'create').then(queueSync);
     };
     $('syncRevoke-' + channel).onclick = () => {
       if(confirm('¿Desactivar este enlace? Dejará de mostrar tu cuadrante.')) void runSync(channel, 'revoke');
