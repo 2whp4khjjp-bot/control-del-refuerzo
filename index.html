@@ -107,11 +107,31 @@ header h1{line-height:20px}.nav{margin-top:2px}.summary{margin-bottom:6px}
 #welcomeSetup .welcome-note{font-size:12px;color:#59748a}
 #welcomeSetup .btn{min-height:44px;width:100%}
 
+#syncBlock input[readonly]{width:100%;margin:4px 0;min-width:0} #syncBlock [hidden]{display:none!important}
 </style></head><body><main class="wrap"><header><div><h1>Control del Refuerzo</h1><button type="button" id="periodButton" aria-label="Personalizar periodo de refuerzo">Personalizar periodo de refuerzo</button></div><button class="btn alt" id="settings" aria-label="Configuración">⚙</button></header><div class="nav"><button id="prev" aria-label="Mes anterior">‹</button><button id="month" aria-label="Seleccionar mes y año"></button><button id="next" aria-label="Mes siguiente">›</button><button id="today" aria-label="Mes actual">⌂</button></div><section class="summary"><button class="stat stat-adjust" id="adjust" aria-label="Ajustar jornada mensual"><small>Objetivo · JM</small><strong id="jm"></strong><span id="jmHours">Ajustar</span></button><div class="stat"><small>Computadas</small><strong id="used"></strong><span id="usedHours">horas</span></div><div class="stat" id="balanceCard"><small>Saldo</small><strong id="balance"></strong><span id="balanceLabel">JN</span></div></section><section class="cal" id="swipe"><div class="week"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div><div class="grid" id="grid"></div></section><dialog class="edit" id="edit" aria-labelledby="editTitle">
 <div class="row"><h3 id="editTitle"></h3><button class="btn alt" type="button" id="close" aria-label="Cerrar editor">×</button></div>
 <div class="choices" id="choices"></div>
 <button class="holiday" type="button" id="festivo"></button>
-</dialog><div class="foot"><button id="rulesButton">ⓘ Recordatorios laborales</button></div><section class="rules" id="rules" hidden><strong>Recordatorios orientativos</strong><ul><li>24 y 31 de diciembre: NL · No laborables por convenio todos los años. Se descuentan de la JM automática y no cuentan como días de vacaciones computables. Los turnos elegidos manualmente se conservan.</li><li>B · Baja computa 1 jornada de lunes a viernes y 0 los sábados y domingos.</li><li>Una R en sábado no requiere JN el domingo. Una R en domingo requiere JN el lunes si es laborable; si el lunes es festivo, no.</li><li>Tras SOL–SOL–LUNA–LUNA recuerda los dos días de descanso, con posibles excepciones.</li><li>Máximo habitual de cuatro coberturas consecutivas y dos fines de semana mensuales por vacaciones, sujetos a excepciones.</li></ul><p id="alerts"></p></section></main><section class="modal" id="monthModal" hidden><div class="panel"><h2>Elegir mes y año</h2><label for="pickMonth">Mes</label><select id="pickMonth"></select><label for="pickYear">Año</label><input type="number" id="pickYear" min="1900" max="2200"><div class="actions"><button class="btn alt" id="monthCancel">Cancelar</button><button class="btn" id="monthApply">Ir al mes</button></div></div></section><section class="modal" id="settingsModal" hidden><div class="panel"><h2>Configuración</h2><div class="block"><strong>Periodo de refuerzo</strong><p id="periodConfigLabel"></p><button type="button" class="btn alt" id="changePeriod">Personalizar periodo</button></div><div class="block"><strong>Festivos del mes</strong><p id="holidayStatus"></p><button class="btn alt" id="reviewHolidays" type="button">Revisar festivos del mes</button></div><div class="block"><strong>Jornada mensual</strong><p id="autoJm"></p><label><input type="checkbox" id="manual"> Personalizar JM de este mes</label><label>JM personalizada</label><input type="number" id="manualJm" min="0" max="40" step=".5"><div class="actions"><button class="btn alt" id="resetJm">Automática</button><button class="btn" id="saveJm">Aplicar</button></div></div><div class="block"><strong>Copias de seguridad</strong><p>Hasta cinco copias internas automáticas semanales, creadas mientras usas la aplicación. Eliminar los datos del navegador puede borrar las copias.</p><p id="backupCount"></p><button class="btn alt" id="restore">Restaurar copia</button><button class="btn alt" id="export">Exportar archivo</button><button class="btn alt" id="import">Importar archivo</button><input id="file" type="file" accept="application/json,.json" hidden></div><div class="block"><strong>Ayuda</strong><p>Una guía breve para aprender a usar tu calendario.</p><button class="btn alt" id="showWelcome">Antes de empezar</button><button class="btn alt" id="showTutorial">Ver tutorial</button></div><div class="block"><strong>Calendario personal</strong><p>Los cambios se guardan solo en este navegador. Compartir el enlace no comparte tu cuadrante.</p><p>Dentro del periodo elegido se parte de JN de lunes a viernes y D los fines de semana, sin turnos ni festivos personalizados. Antes se guardará una copia del calendario actual.</p><button class="btn alt" id="startClean">Empezar de cero</button></div><div class="actions"><button class="btn" id="settingsClose">Cerrar</button></div></div></section><div class="toast" id="toast" role="status"></div>
+</dialog><div class="foot"><button id="rulesButton">ⓘ Recordatorios laborales</button></div><section class="rules" id="rules" hidden><strong>Recordatorios orientativos</strong><ul><li>24 y 31 de diciembre: NL · No laborables por convenio todos los años. Se descuentan de la JM automática y no cuentan como días de vacaciones computables. Los turnos elegidos manualmente se conservan.</li><li>B · Baja computa 1 jornada de lunes a viernes y 0 los sábados y domingos.</li><li>Una R en sábado no requiere JN el domingo. Una R en domingo requiere JN el lunes si es laborable; si el lunes es festivo, no.</li><li>Tras SOL–SOL–LUNA–LUNA recuerda los dos días de descanso, con posibles excepciones.</li><li>Máximo habitual de cuatro coberturas consecutivas y dos fines de semana mensuales por vacaciones, sujetos a excepciones.</li></ul><p id="alerts"></p></section></main><section class="modal" id="monthModal" hidden><div class="panel"><h2>Elegir mes y año</h2><label for="pickMonth">Mes</label><select id="pickMonth"></select><label for="pickYear">Año</label><input type="number" id="pickYear" min="1900" max="2200"><div class="actions"><button class="btn alt" id="monthCancel">Cancelar</button><button class="btn" id="monthApply">Ir al mes</button></div></div></section><section class="modal" id="settingsModal" hidden><div class="panel"><h2>Configuración</h2><div class="block"><strong>Periodo de refuerzo</strong><p id="periodConfigLabel"></p><button type="button" class="btn alt" id="changePeriod">Personalizar periodo</button></div><div class="block"><strong>Festivos del mes</strong><p id="holidayStatus"></p><button class="btn alt" id="reviewHolidays" type="button">Revisar festivos del mes</button></div><div class="block"><strong>Jornada mensual</strong><p id="autoJm"></p><label><input type="checkbox" id="manual"> Personalizar JM de este mes</label><label>JM personalizada</label><input type="number" id="manualJm" min="0" max="40" step=".5"><div class="actions"><button class="btn alt" id="resetJm">Automática</button><button class="btn" id="saveJm">Aplicar</button></div></div><div class="block" id="syncBlock" hidden>
+<strong>Compartir y sincronizar</strong>
+<p>Al activar un enlace se envían a Google los turnos y festivos del periodo elegido. Las bajas se muestran sin indicar el motivo. Los cambios de este navegador se sincronizan al volver a tener conexión.</p>
+<div id="syncCodeBox"><label for="syncCode">Código de activación</label><input id="syncCode" type="password" autocomplete="off" required></div>
+<div class="block"><strong>Cuadrante compartido</strong>
+<p>Cualquiera con el enlace podrá ver el cuadrante actualizado.</p>
+<p id="syncStatus-web" role="status"></p>
+<input id="syncLink-web" aria-label="Enlace del cuadrante compartido" type="url" readonly hidden>
+<button type="button" class="btn alt" id="syncCreate-web">Activar enlace</button>
+<button type="button" class="btn alt" id="syncCopy-web" hidden>Copiar enlace</button>
+<button type="button" class="btn alt" id="syncRevoke-web" hidden>Desactivar enlace</button></div>
+<div class="block"><strong>Calendario del iPhone</strong>
+<p>En el iPhone, abre Calendario → Calendarios → Añadir calendario → Añadir calendario de suscripción. Pega el enlace para verlo junto a Turno F.</p>
+<p id="syncStatus-ios" role="status"></p>
+<input id="syncLink-ios" aria-label="Enlace de suscripción del iPhone" type="url" readonly hidden>
+<button type="button" class="btn alt" id="syncCreate-ios">Activar suscripción</button>
+<button type="button" class="btn alt" id="syncCopy-ios" hidden>Copiar suscripción</button>
+<button type="button" class="btn alt" id="syncRevoke-ios" hidden>Desactivar suscripción</button></div>
+</div>
+<div class="block"><strong>Copias de seguridad</strong><p>Hasta cinco copias internas automáticas semanales, creadas mientras usas la aplicación. Eliminar los datos del navegador puede borrar las copias.</p><p id="backupCount"></p><button class="btn alt" id="restore">Restaurar copia</button><button class="btn alt" id="export">Exportar archivo</button><button class="btn alt" id="import">Importar archivo</button><input id="file" type="file" accept="application/json,.json" hidden></div><div class="block"><strong>Ayuda</strong><p>Una guía breve para aprender a usar tu calendario.</p><button class="btn alt" id="showWelcome">Antes de empezar</button><button class="btn alt" id="showTutorial">Ver tutorial</button></div><div class="block"><strong>Calendario personal</strong><p>Los cambios se guardan solo en este navegador. El enlace habitual de la webapp abre el calendario personal de cada usuario.</p><p>Dentro del periodo elegido se parte de JN de lunes a viernes y D los fines de semana, sin turnos ni festivos personalizados. Antes se guardará una copia del calendario actual.</p><button class="btn alt" id="startClean">Empezar de cero</button></div><div class="actions"><button class="btn" id="settingsClose">Cerrar</button></div></div></section><div class="toast" id="toast" role="status"></div>
 
 
 
@@ -208,7 +228,7 @@ function save(){try{localStorage.setItem(ST,JSON.stringify(data))}catch(e){toast
 function backups(){try{const b=JSON.parse(localStorage.getItem(BK)||'[]');return Array.isArray(b)?b:[]}catch(e){return []}}
 function backup(){try{let b=backups(),t=Date.now();if(b.length&&t-b[b.length-1].at<604800000)return;b.push({at:t,data:JSON.parse(JSON.stringify(data))});b=b.slice(-5);localStorage.setItem(BK,JSON.stringify(b))}catch(e){}}
 function close(){chosen=null;if($('edit').open)$('edit').close()}
-function paint(){paintPeriodStatus();paintHolidayStatus();const s=stats();$('month').textContent=nm[m]+' '+y;$('jm').textContent=num(s.jm);$('used').textContent=num(s.computed);$('jmHours').textContent=num(s.jm*8)+' h · Ajustar';$('usedHours').textContent=num(s.computed*8)+' h';$('balance').textContent=(s.balance>0?'+':'')+num(s.balance);$('balanceCard').className='stat '+(s.balance>=.5?'extra':s.balance===0||s.balance===-.5?'good':'bad');$('balanceLabel').textContent=s.balance>=.5?num(s.balance*8)+' h extra':s.balance===-.5?'Tolerado':s.balance===0?'Cuadrado':'JN pendientes';
+function paint(){queueSync();paintPeriodStatus();paintHolidayStatus();const s=stats();$('month').textContent=nm[m]+' '+y;$('jm').textContent=num(s.jm);$('used').textContent=num(s.computed);$('jmHours').textContent=num(s.jm*8)+' h · Ajustar';$('usedHours').textContent=num(s.computed*8)+' h';$('balance').textContent=(s.balance>0?'+':'')+num(s.balance);$('balanceCard').className='stat '+(s.balance>=.5?'extra':s.balance===0||s.balance===-.5?'good':'bad');$('balanceLabel').textContent=s.balance>=.5?num(s.balance*8)+' h extra':s.balance===-.5?'Tolerado':s.balance===0?'Cuadrado':'JN pendientes';
 const g=$('grid'),fresh=g.dataset.month!==mk(y,m);if(fresh){g.replaceChildren();g.dataset.month=mk(y,m)}const offset=(new Date(y,m,1).getDay()+6)%7;for(let i=0;fresh&&i<offset;i++){const v=document.createElement('div');v.className='blank';g.append(v)}
 for(let d=1;d<=new Date(y,m+1,0).getDate();d++){const k=key(y,m,d),sft=shift(k),b=fresh?document.createElement('button'):g.querySelector('[data-date="'+k+'"]');b.dataset.date=k;b.className='cell '+sft.toLowerCase()+(chosen===k?' sel':'')+(!inPeriod(k)?' outside':'');b.disabled=!inPeriod(k);b.setAttribute('aria-label',d+' de '+nm[m]+', '+sft+(sft==='B'?' (Baja)':'')+(nonWorking(k)?', no laborable por convenio':'')+(!inPeriod(k)?', fuera del periodo':''));const n=fresh?document.createElement('span'):b.children[0];n.className='n'+(y===now.y&&m===now.m&&d===now.d?' now':'');n.textContent=d;const c=fresh?document.createElement('span'):b.children[1];c.className='c';c.textContent=inPeriod(k)?sft:'—';if(fresh)b.append(n,c);const previousBadge=b.querySelector('.f');if(inPeriod(k)&&(nonWorking(k)||holiday(k))){const f=previousBadge||document.createElement('span');f.className=nonWorking(k)?'f nl':'f';f.textContent=nonWorking(k)?'NL':'F';if(!previousBadge)b.append(f)}else if(previousBadge)previousBadge.remove();b.onclick=()=>{if(chosen===k)close();else open(k);paint()};if(fresh)g.append(b)}if(showRules)alerts()}
 function open(k,preview=false){if(!currentPeriod()){beginPeriodSetup();return}if(!inPeriod(k))return;if(!monthReviewed(k.slice(0,7))){beginHolidayReview();return}chosen=k;const d=parse(k);$('editTitle').textContent='Editar '+d.getDate()+' de '+nm[d.getMonth()].toLowerCase();$('festivo').disabled=nonWorking(k);$('festivo').textContent=nonWorking(k)?'NL · No laborable por convenio (automático)':holiday(k)?'Quitar marca de festivo ×':'Marcar como festivo  F';const opts=$('choices');opts.replaceChildren();for(const code of C){const b=document.createElement('button');b.className=code.toLowerCase();b.textContent=code==='B'?'B · Baja':code;b.setAttribute('aria-pressed',String(code===shift(k)));b.autofocus=code===shift(k);b.onclick=()=>{data.entries[k]={...e(k),shift:code};save();close();paint()};opts.append(b)}if(!$('edit').open){if(preview)$('edit').show();else $('edit').showModal()}}
@@ -448,6 +468,156 @@ $('tourBack').onclick=()=>{if(tourIndex>0){tourIndex--;showTourStep()}};
 $('tourSkip').onclick=endTour;
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!tour.hidden){ev.preventDefault();endTour()}});
 $('showTutorial').onclick=startTour;
+const syncEndpoint = 'https://script.google.com/macros/s/AKfycbx8rg73KeXV9lY4gXx7icwxc9xi1nAwBRaiuJSIxFcLW6Nvg2O7XABcynohXFmECb9atw/exec';
+const syncKey = 'control-refuerzo-enlaces-v1';
+const syncCodes = {JN:'J', SOL:'S', LUNA:'L', V:'V', R:'R', D:'D', B:'O'};
+const syncChannels = ['web', 'ios'];
+const syncQueue = new Map();
+const syncSent = new Map();
+const syncErrors = new Map();
+const syncDelay = 900;
+let syncTimer;
+
+function syncLinks(){
+  try { return JSON.parse(localStorage.getItem(syncKey)) || {}; }
+  catch (_) { return {}; }
+}
+
+function setSyncLink(channel, entry){
+  const links = syncLinks();
+  if(entry) links[channel] = entry;
+  else delete links[channel];
+  localStorage.setItem(syncKey, JSON.stringify(links));
+}
+
+function syncSnapshot(period){
+  const days = [];
+  for(let date = period.start; date <= period.end && days.length <= 366; date = plus(date, 1)){
+    if(period.holidayReviews?.[date.slice(0, 7)]?.confirmed !== true){
+      days.push('.');
+      continue;
+    }
+    const code = syncCodes[shift(date)] || 'O';
+    days.push(nonWorking(date) && code === 'D' ? '!' : holiday(date) ? code.toLowerCase() : code);
+  }
+  if(days.length > 366) throw new Error('Puedes compartir un periodo de hasta 366 días.');
+  return {start:period.start, end:period.end, days:days.join('')};
+}
+
+function syncToken(){
+  return Array.from(crypto.getRandomValues(new Uint8Array(32)), n => n.toString(16).padStart(2,'0')).join('');
+}
+
+function syncURL(channel, entry){
+  const url = new URL(syncEndpoint);
+  url.searchParams.set('channel', channel);
+  url.searchParams.set('id', entry.id);
+  return url.href;
+}
+
+function showSyncControls(){
+  const links = syncLinks();
+  for(const channel of syncChannels){
+    const entry = links[channel], active = entry?.active;
+    const status = $('syncStatus-' + channel);
+    status.textContent = syncErrors.get(channel) || (active ? 'Periodo ' + periodLabel(entry) :
+      entry ? 'Activación pendiente. Puedes reintentar o retirar el enlace.' : 'Desactivado');
+    $('syncCreate-' + channel).hidden = !!active;
+    $('syncCreate-' + channel).disabled = syncQueue.has(channel);
+    $('syncRevoke-' + channel).hidden = !entry;
+    $('syncRevoke-' + channel).disabled = syncQueue.has(channel);
+    $('syncCopy-' + channel).hidden = !active;
+    $('syncLink-' + channel).hidden = !active;
+    $('syncLink-' + channel).value = active ? syncURL(channel, entry) : '';
+  }
+  $('syncCodeBox').hidden = syncChannels.every(channel => links[channel]?.active);
+}
+
+async function syncRequest(action, channel, entry, extra){
+  const response = await fetch(syncEndpoint, {
+    method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, credentials:'omit',
+    redirect:'follow', cache:'no-store', signal:AbortSignal.timeout(25000),
+    body:JSON.stringify({action, channel, id:entry.id, owner:entry.owner, ...extra})
+  });
+  const result = await response.json();
+  if(!response.ok || result.ok !== true) throw new Error(result.error || 'No se pudo sincronizar.');
+}
+
+async function runSync(channel, action, code){
+  if(syncQueue.has(channel)) return;
+  let entry = syncLinks()[channel];
+  if(!entry && action !== 'create') return;
+  syncQueue.set(channel, true);
+  syncErrors.delete(channel);
+  let sentPeriod;
+  try {
+    if(action === 'revoke'){
+      showSyncControls();
+      await syncRequest(action, channel, entry);
+      setSyncLink(channel, null);
+      syncSent.delete(channel);
+      return;
+    }
+    const period = entry ? storedPeriods().find(period => period.id === entry.periodId) : currentPeriod();
+    if(!period) throw new Error('El periodo de este enlace ya no está guardado.');
+    const schedule = syncSnapshot(period);
+    if(action === 'update' && syncSent.get(channel) === schedule.days) return;
+    if(!entry){
+      entry = {id:syncToken(), owner:syncToken(), start:period.start, end:period.end, periodId:period.id};
+    }
+    entry.revision = Math.max(Date.now(), (entry.revision || 0) + 1);
+    setSyncLink(channel, entry);
+    showSyncControls();
+    await syncRequest(action, channel, entry, {schedule, revision:entry.revision, ...(code ? {code} : {})});
+    if(action === 'create'){
+      setSyncLink(channel, {...entry, active:true});
+      $('syncCode').value = '';
+    }
+    syncSent.set(channel, schedule.days);
+    sentPeriod = period.id;
+  } catch(error){
+    syncErrors.set(channel, error instanceof TypeError || error.name === 'TimeoutError'
+      ? 'Sin conexión con Google. Tus cambios siguen guardados en este navegador.' : error.message);
+  } finally {
+    syncQueue.delete(channel);
+    showSyncControls();
+    const latest = sentPeriod && storedPeriods().find(period => period.id === sentPeriod);
+    if(latest && syncSnapshot(latest).days !== syncSent.get(channel)) queueSync();
+  }
+}
+
+function queueSync(){
+  if(!syncEndpoint.startsWith('https://script.google.com/')) return;
+  if(!syncChannels.some(channel => syncLinks()[channel]?.active)) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    await Promise.all(syncChannels.filter(channel => syncLinks()[channel]?.active)
+      .map(channel => runSync(channel, 'update')));
+  }, syncDelay);
+}
+
+if(syncEndpoint.startsWith('https://script.google.com/')){
+  $('syncBlock').hidden = false;
+  for(const channel of syncChannels){
+    $('syncCreate-' + channel).onclick = () => {
+      const code = $('syncCode').value.trim();
+      if(!code){$('syncCode').reportValidity();return}
+      void runSync(channel, 'create', code).then(queueSync);
+    };
+    $('syncRevoke-' + channel).onclick = () => {
+      if(confirm('¿Desactivar este enlace? Dejará de mostrar tu cuadrante.')) void runSync(channel, 'revoke');
+    };
+    $('syncCopy-' + channel).onclick = async () => {
+      const field = $('syncLink-' + channel);
+      try { await navigator.clipboard.writeText(field.value); toast('Enlace copiado'); }
+      catch (_) { field.focus(); field.select(); }
+    };
+  }
+  window.addEventListener('online', queueSync);
+  document.addEventListener('visibilitychange', () => { if(!document.hidden) queueSync(); });
+  showSyncControls();
+}
+
 let seenTour=false;try{seenTour=localStorage.getItem(TOUR)==='done'}catch(err){}
 clampView();paint();if(!currentPeriod())beginPeriodSetup();else{setupReturnMonth=mk(y,m);setupReviewQueue=periodMonths().some(monthKey=>!monthReviewed(monthKey));requireHolidayReview();if(!setupReviewQueue&&!seenTour&&tour.hidden)startTour();}
 
